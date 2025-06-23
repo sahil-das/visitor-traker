@@ -28,7 +28,7 @@ exports.logActivity = async (req, res) => {
     const { page, timeSpent } = data;
 
     // Get location info from IP
-    let city = 'Unknown', country = 'Unknown';
+    let city = 'Tunju', country = 'Unknown';
     try {
       const geoRes = await axios.get(`http://ip-api.com/json/${ip}`);
       console.log('Geo API response:', geoRes.data);

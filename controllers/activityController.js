@@ -4,7 +4,6 @@ const UAParser = require('ua-parser-js');
 const axios = require('axios');
 
 exports.logActivity = async (req, res) => {
-  console.log('--- logActivity route HIT ---');
   let data = req.body;
   if (Buffer.isBuffer(data)) {
     try {
@@ -13,8 +12,6 @@ exports.logActivity = async (req, res) => {
       return res.status(400).json({ message: 'Invalid JSON' });
     }
   }
-  console.log('Received activity:', data);
-  console.log('Raw req.body:', req.body, 'Type:', typeof req.body, 'IsBuffer:', Buffer.isBuffer(req.body));
   try {
     const parser = new UAParser(req.headers['user-agent']);
     const uaResult = parser.getResult();
@@ -27,15 +24,12 @@ exports.logActivity = async (req, res) => {
     // Get client IP (first in x-forwarded-for if present)
     const ipRaw = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const ip = Array.isArray(ipRaw) ? ipRaw[0] : (ipRaw ? ipRaw.split(',')[0].trim() : '');
-    console.log('IP for geolocation:', ip);
     const { page, timeSpent } = data;
 
     // Get location info from IP
     let city = 'Unknown', country = 'Unknown';
-    console.log('Fetching geolocation for IP:', ip);
     try {
       const geoRes = await axios.get(`http://ip-api.com/json/${ip}`);
-      console.log('Geo API response:', geoRes.data);
       if (geoRes.data && geoRes.data.status === 'success') {
         city = geoRes.data.city;
         country = geoRes.data.country;

@@ -1,6 +1,7 @@
 // controllers/activityController.js
 const Activity = require('../models/Activity');
 const UAParser = require('ua-parser-js');
+const axios = require('axios');
 
 exports.logActivity = async (req, res) => {
   let data = req.body;
@@ -25,6 +26,16 @@ exports.logActivity = async (req, res) => {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const { page, timeSpent } = data;
 
+    // Get location info from IP
+    let city = 'Unknown', country = 'Unknown';
+    try {
+      const geoRes = await axios.get(`http://ip-api.com/json/${ip}`);
+      if (geoRes.data && geoRes.data.status === 'success') {
+        city = geoRes.data.city;
+        country = geoRes.data.country;
+      }
+    } catch (geoErr) {}
+
     const newActivity = new Activity({
       ip,
       browser,
@@ -33,7 +44,9 @@ exports.logActivity = async (req, res) => {
       deviceModel,
       deviceVendor,
       page,
-      timeSpent
+      timeSpent,
+      city,
+      country
     });
 
     await newActivity.save();

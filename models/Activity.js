@@ -10,6 +10,8 @@ const activitySchema = new mongoose.Schema({
   deviceVendor: String, // Added
   page: String,
   timeSpent: Number,
+  city: String, // Added
+  country: String, // Added
   timestamp: {
     type: Date,
     default: Date.now

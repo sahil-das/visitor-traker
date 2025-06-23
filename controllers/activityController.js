@@ -12,8 +12,7 @@ exports.logActivity = async (req, res) => {
       return res.status(400).json({ message: 'Invalid JSON' });
     }
   }
-  console.log('Received activity:', data);
-  console.log('Raw req.body:', req.body, 'Type:', typeof req.body, 'IsBuffer:', Buffer.isBuffer(req.body));
+
   try {
     const parser = new UAParser(req.headers['user-agent']);
     const uaResult = parser.getResult();

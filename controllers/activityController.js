@@ -4,6 +4,7 @@ const UAParser = require('ua-parser-js');
 const axios = require('axios');
 
 exports.logActivity = async (req, res) => {
+  console.log('--- logActivity route HIT ---');
   let data = req.body;
   if (Buffer.isBuffer(data)) {
     try {
@@ -23,14 +24,15 @@ exports.logActivity = async (req, res) => {
     const browser = uaResult.browser.name || 'Unknown';
     const os = uaResult.os.name || 'Unknown';
 
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    // Get client IP (first in x-forwarded-for if present)
+    const ipRaw = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const ip = Array.isArray(ipRaw) ? ipRaw[0] : (ipRaw ? ipRaw.split(',')[0].trim() : '');
     console.log('IP for geolocation:', ip);
     const { page, timeSpent } = data;
 
-    console.log("before location")
     // Get location info from IP
-    let city = 'Tunju', country = 'Unknown';
-    console.log(ip)
+    let city = 'Unknown', country = 'Unknown';
+    console.log('Fetching geolocation for IP:', ip);
     try {
       const geoRes = await axios.get(`http://ip-api.com/json/${ip}`);
       console.log('Geo API response:', geoRes.data);

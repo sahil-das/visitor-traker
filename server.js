@@ -28,6 +28,8 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server listening on port ${PORT}`));
 
+console.log('Node version:', process.version);
+
 // 🔄 Self-ping script (to prevent Render sleep)
 const SELF_URL = process.env.SELF_URL || `http://localhost:${PORT}`;
 

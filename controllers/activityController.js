@@ -40,6 +40,13 @@ exports.logActivity = async (req, res) => {
       console.error('Geo API error:', geoErr);
     }
 
+    // Generate or extract a sessionId
+    let sessionId = req.headers['x-session-id'];
+    if (!sessionId) {
+      // If not provided, generate a random one (could use uuid or fallback)
+      sessionId = Math.random().toString(36).substr(2, 16) + Date.now();
+    }
+
     const newActivity = new Activity({
       ip,
       browser,
@@ -50,7 +57,8 @@ exports.logActivity = async (req, res) => {
       page,
       timeSpent,
       city,
-      country
+      country,
+      sessionId // Add sessionId to the document
     });
 
     await newActivity.save();

@@ -12,6 +12,7 @@ const activitySchema = new mongoose.Schema({
   timeSpent: Number,
   city: String, // Added
   country: String, // Added
+  sessionId: String, // Added for session tracking
   timestamp: {
     type: Date,
     default: Date.now

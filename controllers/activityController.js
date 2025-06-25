@@ -21,6 +21,13 @@ exports.logActivity = async (req, res) => {
     const browser = uaResult.browser.name || 'Unknown';
     const os = uaResult.os.name || 'Unknown';
 
+        // Generate or extract a sessionId
+    let sessionId = usResult.sessionId || data.sessionId || req.headers['x-session-id'] || req.cookies['session_id'];
+    if (!sessionId) {
+      // If not provided, generate a random one (could use uuid or fallback)
+      sessionId = Math.random().toString(36).substr(2, 16) + Date.now();
+    }
+
     // Get client IP (first in x-forwarded-for if present)
     const ipRaw = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const ip = Array.isArray(ipRaw) ? ipRaw[0] : (ipRaw ? ipRaw.split(',')[0].trim() : '');
@@ -40,12 +47,7 @@ exports.logActivity = async (req, res) => {
       console.error('Geo API error:', geoErr);
     }
 
-    // Generate or extract a sessionId
-    let sessionId = req.headers['x-session-id'];
-    if (!sessionId) {
-      // If not provided, generate a random one (could use uuid or fallback)
-      sessionId = Math.random().toString(36).substr(2, 16) + Date.now();
-    }
+
 
     const newActivity = new Activity({
       ip,

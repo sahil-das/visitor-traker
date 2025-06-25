@@ -22,7 +22,7 @@ exports.logActivity = async (req, res) => {
     const os = uaResult.os.name || 'Unknown';
 
         // Generate or extract a sessionId
-    let sessionId = usResult.sessionId || data.sessionId || req.headers['x-session-id'] || req.cookies['session_id'];
+    let sessionId = data.sessionId || req.headers['x-session-id'] || req.cookies['session_id'];
     if (!sessionId) {
       // If not provided, generate a random one (could use uuid or fallback)
       sessionId = Math.random().toString(36).substr(2, 16) + Date.now();
